@@ -46,7 +46,10 @@ df_nest$data[[1]]
 ```{r map df_nest}
 df_nest <- df_nest %>%
   mutate(NestAv = map_dbl(data, ~mean(.$z)))
+
+df_nest
 ```
+
 
 ```{r map model}
 df_nest <- df_nest %>%
@@ -59,9 +62,9 @@ Inspect Model
 df_nest$LinModel[[1]]
 ```
 
-Mdel outputs from R are in 'list' standard format, and are not consistent across model functions.
+Mpdel outputs from R are in 'list' format, and are not consistent across model functions.
 
-'tidy::room' can help.
+'tidy::broom' can help.
 
 ```{r model output}
 df_nest <- df_nest %>%
@@ -72,12 +75,39 @@ df_nest
 df_nest$ModelCoeff[[1]]
 ```
 Extracting Individual Coefficients
+```{r unnesting}
+df_unnest <- df_nest %>% 
+  unnest(ModelCoeff)
+
+df_unnest
+```
+
+Pivot wider
+```{r}
+df_wide <- df_unnest %>%
+  pivot_wider(data = ., names_from = term, values_from = c(estimate, std.error, statistic, p.value ))
+
+df_wide
+```
+
 
 
 What if model fails on some data subsets?
-```{r model output}
-df_nest <- df_nest %>%
-  mutate(ModelCoeff = map(LinModel, possibly(tidy, otherwise = NULL)))
+```{r possibly}
+df2 <- tibble(x = c(1, 2, NA, 4,5,NA, 7, 8, NA), y = rep(c("a","b","c"), times = 3), z = c(10, 12, NA, 16, 18, NA, 22, 24, NA))
 
-df_nest
+df2
+
+df2_nest <- df2 %>%
+  group_by(y) %>%
+  nest() %>%
+  mutate(LinModel = map(data, ~lm(z ~ x, data = .)))
+
+#possibly (alternative to 'trycatch')
+df2_nest <- df2 %>%
+  group_by(y) %>%
+  nest() %>%
+  mutate(LinModel = map(data, possibly(~lm(z ~ x, data = .), otherwise = NULL)))
+
+df2_nest
 ```
