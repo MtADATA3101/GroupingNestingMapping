@@ -1,6 +1,8 @@
 ---
 title: "GroupingNestingMapping"
-output: html_notebook
+output:
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r libraries}
@@ -101,20 +103,20 @@ df_wide
 
 What if model fails on some data subsets?
 ```{r possibly}
-df2 <- tibble(x = c(1, 2, NA, 4,5,NA, 7, 8, NA), y = rep(c("a","b","c"), times = 3), z = c(10, 12, NA, 16, 18, NA, 22, 24, NA))
-
-df2
-
-df2_nest <- df2 %>%
-  group_by(y) %>%
-  nest() %>%
-  mutate(LinModel = map(data, ~lm(z ~ x, data = .)))
+# df2 <- tibble(x = c(1, 2, NA, 4,5,NA, 7, 8, NA), y = rep(c("a","b","c"), times = 3), z = c(10, 12, NA, 16, 18, NA, 22, 24, NA))
+# 
+# df2
+# 
+# df2_nest <- df2 %>%
+#   group_by(y) %>%
+#   nest() %>%
+#   mutate(LinModel = map(data, ~lm(z ~ x, data = .)))
 
 #possibly (alternative to 'trycatch')
-df2_nest <- df2 %>%
-  group_by(y) %>%
-  nest() %>%
-  mutate(LinModel = map(data, possibly(~lm(z ~ x, data = .), otherwise = NULL)))
-
-df2_nest
+# df2_nest <- df2 %>%
+#   group_by(y) %>%
+#   nest() %>%
+#   mutate(LinModel = map(data, possibly(~lm(z ~ x, data = .), otherwise = NULL)))
+# 
+# df2_nest
 ```
