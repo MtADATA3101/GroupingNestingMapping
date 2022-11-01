@@ -1,0 +1,50 @@
+---
+title: "GroupingNestingMapping"
+output: html_notebook
+---
+
+```{r libraries}
+library("tidyverse")
+library("modelr")
+library("broom")
+```
+
+```{r tibble df}
+df <- tibble(x = c(1:6), y = rep(c("a","b"), times = 3), z = seq(10,20, by = 2))
+df
+```
+
+```{r apply function to df}
+df %>%
+  mutate(a = mean(z))
+```
+
+```{r group}
+df_group = df %>%
+  group_by(y)
+
+df_group
+```
+
+
+```{r apply function to df_group}
+df_group %>%
+  mutate(a = mean(z))
+```
+
+```{r nest df_group}
+df_nest <- df_group %>%
+  nest()
+
+df_nest
+```
+
+```{r inspect nest}
+df_nest$data[[1]]
+```
+
+```{r map df_nest}
+df_nest %>%
+  mutate(map_dbl(data, ~mean(.$z)))
+```
+
