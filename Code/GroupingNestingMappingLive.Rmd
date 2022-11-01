@@ -55,6 +55,7 @@ df_nest2 <- df_nest %>%
          NestZAv = map_dbl(data, ~mean(.$z)))
 
 df_nest2
+
 ```
 
 
@@ -116,5 +117,37 @@ df2_nest <- df2 %>%
 df2_nest
 
 df2_nest$LinModel[[3]]
+```
+
+```{r test nest}
+test_nest <- df %>%
+  nest()
+
+test_nest
+
+test_nest$data
+
+test_nest2 <- df %>%
+  nest(-c(y))
+
+test_nest2
+
+df <- df %>%
+  mutate(b = c("m","m", "m", "n","n","n"))
+
+df
+
+test_nest3 <- df %>%
+  nest(-c(y, b))
+
+test_nest3
+
+test_nest3$data[[1]]
+
+test_nest4 <- df %>%
+  group_by(y, b) %>%
+  nest()
+
+test_nest4
 ```
 
