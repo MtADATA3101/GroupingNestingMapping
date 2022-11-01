@@ -37,10 +37,17 @@ df_nest <- df_group %>%
   nest()
 
 df_nest
+
+df_nest_direct <- df %>%
+  nest(data = c(x, z))
+
+df_nest_direct
 ```
 
 ```{r inspect nest}
 df_nest$data[[1]]
+
+df_nest_direct$data[[1]]
 ```
 
 ```{r map df_nest}
