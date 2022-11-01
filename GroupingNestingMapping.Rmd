@@ -44,7 +44,40 @@ df_nest$data[[1]]
 ```
 
 ```{r map df_nest}
-df_nest %>%
-  mutate(map_dbl(data, ~mean(.$z)))
+df_nest <- df_nest %>%
+  mutate(NestAv = map_dbl(data, ~mean(.$z)))
 ```
 
+```{r map model}
+df_nest <- df_nest %>%
+  mutate(LinModel = map(data, ~lm(z ~ x, data = .)))
+
+df_nest 
+```
+Inspect Model
+```{r inspect model}
+df_nest$LinModel[[1]]
+```
+
+Mdel outputs from R are in 'list' standard format, and are not consistent across model functions.
+
+'tidy::room' can help.
+
+```{r model output}
+df_nest <- df_nest %>%
+  mutate(ModelCoeff = map(LinModel, tidy))
+
+df_nest
+
+df_nest$ModelCoeff[[1]]
+```
+Extracting Individual Coefficients
+
+
+What if model fails on some data subsets?
+```{r model output}
+df_nest <- df_nest %>%
+  mutate(ModelCoeff = map(LinModel, possibly(tidy, otherwise = NULL)))
+
+df_nest
+```
